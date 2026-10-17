@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { TOOLS, type Tool } from './tools';
+import { SUPPORT_URL, TOOLS, type Tool } from './tools';
 import { Downloader } from './tools/downloader/Downloader';
 import { Editor } from './tools/editor/Editor';
 
@@ -47,6 +47,17 @@ export function App() {
             <TabLink key={tool.id} tool={tool} active={tool.id === active} />
           ))}
         </nav>
+        <div className="bar__end">
+          {SUPPORT_URL && (
+            <a className="support-link" href={SUPPORT_URL} target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+                <path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.1 5.3 3 1.7-1.9 3.2-3 5.3-3 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" />
+              </svg>
+              Support us
+            </a>
+          )}
+          <a className="bar__terms" href="/terms.html">Terms</a>
+        </div>
       </header>
 
       <main className="stage">

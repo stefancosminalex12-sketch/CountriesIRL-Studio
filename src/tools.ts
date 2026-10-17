@@ -30,3 +30,7 @@ export const TOOLS: Tool[] = [
    on your own PC; once it is put online through Cloudflare Tunnel, this
    becomes that address. */
 export const HELPER_URL = 'http://127.0.0.1:5199';
+
+/* The donation link (the same Ko-fi page as countriesirl.com). Empty hides
+   the "Support us" button in the top bar. */
+export const SUPPORT_URL = '';

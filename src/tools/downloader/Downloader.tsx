@@ -163,6 +163,10 @@ export function Downloader() {
           </button>
         </div>
 
+        <p className="dl-fair">
+          Download only what you made or have permission to use. <a href="/terms.html">Terms</a>
+        </p>
+
         {lookup.state === 'error' && <p className="dl-error" role="alert">{lookup.message}</p>}
 
         {lookup.state === 'ready' && (
