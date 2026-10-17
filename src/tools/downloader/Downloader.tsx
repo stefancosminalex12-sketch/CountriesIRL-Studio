@@ -11,6 +11,8 @@ import { fetchFile, health, HelperOffline, jobStatus, lookUp, startDownload, typ
    Editor. The downloading itself happens in helper/server.mjs on your PC.
    ========================================================================== */
 
+type HelperState = Health | 'idle' | 'checking' | 'offline';
+
 type Lookup =
   | { state: 'idle' }
   | { state: 'loading'; url: string }
@@ -27,8 +29,19 @@ type Download = {
   file?: { blob: Blob; name: string; href: string };
 };
 
+/* Reaching the helper means talking to a program on this computer, which
+   browsers now ask permission for. So nothing is tried until someone
+   chooses to connect, and a browser that has connected once is remembered
+   and reconnects by itself. */
+const CONNECTED_KEY = 'irl-studio.helper';
+
+function rememberedHelper() {
+  try { return localStorage.getItem(CONNECTED_KEY) === 'on'; } catch { return false; }
+}
+
 export function Downloader() {
-  const [helper, setHelper] = useState<Health | 'checking' | 'offline'>('checking');
+  const [connect, setConnect] = useState(rememberedHelper);
+  const [helper, setHelper] = useState<HelperState>(() => (rememberedHelper() ? 'checking' : 'idle'));
   const [text, setText] = useState('');
   const [lookup, setLookup] = useState<Lookup>({ state: 'idle' });
   const [kind, setKind] = useState<'video' | 'audio'>('video');
@@ -40,9 +53,12 @@ export function Downloader() {
   const link = readLink(text);
   const platform = link ? detect(link) : null;
 
-  /* Is the helper running? Checked now, then every few seconds while it
-     is not, so starting it is picked up without a reload. */
+  /* Once connecting is chosen: is the helper running? Checked now, then
+     every few seconds while it is not, so starting it is picked up without
+     a reload. */
   useEffect(() => {
+    if (!connect) return;
+    setHelper('checking');
     let stop = false;
     let timer = 0;
     const check = async () => {
@@ -58,7 +74,12 @@ export function Downloader() {
     };
     check();
     return () => { stop = true; window.clearTimeout(timer); };
-  }, []);
+  }, [connect]);
+
+  const startConnecting = () => {
+    try { localStorage.setItem(CONNECTED_KEY, 'on'); } catch { /* fine: it just won't be remembered */ }
+    setConnect(true);
+  };
 
   const run = useCallback(async (raw: string) => {
     const url = readLink(raw);
@@ -127,7 +148,7 @@ export function Downloader() {
     return () => window.clearInterval(timer);
   }, [running]);
 
-  const ready = helper !== 'checking' && helper !== 'offline';
+  const ready = typeof helper === 'object' && !!helper.ytdlp;
 
   return (
     <div className="tool downloader">
@@ -136,7 +157,7 @@ export function Downloader() {
         <p>Paste a link from YouTube, TikTok, Instagram, Facebook or almost anywhere else. The site is picked up from the link.</p>
       </div>
 
-      <HelperStatus helper={helper} />
+      <HelperStatus helper={helper} onConnect={startConnecting} />
 
       <form className="dl-box" onSubmit={(e) => { e.preventDefault(); run(text); }}>
         <div className="dl-input">
@@ -242,7 +263,18 @@ export function Downloader() {
   );
 }
 
-function HelperStatus({ helper }: { helper: Health | 'checking' | 'offline' }) {
+function HelperStatus({ helper, onConnect }: { helper: HelperState; onConnect: () => void }) {
+  if (helper === 'idle') {
+    return (
+      <div className="helper-status is-off" role="status">
+        <strong>The Downloader works through a helper program on your computer.</strong> If you have it
+        running, connect to it. Your browser will ask to let this site reach apps on your device: choose Allow.
+        <div className="helper-status__action">
+          <button type="button" className="btn btn--primary btn--small-dark" onClick={onConnect}>Connect helper</button>
+        </div>
+      </div>
+    );
+  }
   if (helper === 'checking') return <p className="helper-status">Checking for the helper…</p>;
   if (helper === 'offline') {
     return (
