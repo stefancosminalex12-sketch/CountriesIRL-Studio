@@ -37,9 +37,27 @@ const here = dirname(fileURLToPath(import.meta.url));
 /* --------------------------------------------------------------------------
    Finding yt-dlp and ffmpeg
    --------------------------------------------------------------------------
-   helper/bin/ first (drop the .exe files there), then winget's own folder
-   (so a winget install works without restarting the terminal), then PATH.
+   helper/bin/ first (drop the .exe files there), then winget's own folder,
+   then PATH.
+
+   winget adds what it installs to PATH, but a program that was already
+   running keeps the PATH it started with. So on Windows the PATH is read
+   fresh from the system each time — an install is picked up without a
+   restart, and yt-dlp, started from here, can find Deno (which it needs for
+   YouTube) and ffmpeg too.
    -------------------------------------------------------------------------- */
+
+function refreshPath() {
+  if (!WIN) return;
+  const read = spawnSync('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command',
+    "[Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [Environment]::GetEnvironmentVariable('Path','User')"],
+  { encoding: 'utf8', windowsHide: true });
+  if (read.status !== 0 || !read.stdout.trim()) return;
+  const seen = new Set();
+  const merged = [...read.stdout.trim().split(';'), ...(process.env.Path || process.env.PATH || '').split(';')]
+    .filter((dir) => dir && !seen.has(dir.toLowerCase()) && seen.add(dir.toLowerCase()));
+  process.env.Path = merged.join(';');
+}
 
 function findTool(name) {
   const file = WIN ? `${name}.exe` : name;
@@ -54,6 +72,7 @@ function findTool(name) {
 }
 
 function tools() {
+  refreshPath();
   const ytdlp = findTool('yt-dlp');
   const ffmpeg = findTool('ffmpeg');
   let version = null;
