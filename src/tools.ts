@@ -33,4 +33,4 @@ export const HELPER_URL = 'http://127.0.0.1:5199';
 
 /* The donation link (the same Ko-fi page as countriesirl.com). Empty hides
    the "Support us" button in the top bar. */
-export const SUPPORT_URL = '';
+export const SUPPORT_URL = 'https://ko-fi.com/L1Y628Z7U0';
