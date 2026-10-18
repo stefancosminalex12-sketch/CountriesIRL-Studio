@@ -50,6 +50,11 @@ first, then in winget's folder, then on PATH — no restart needed.
 Keep yt-dlp up to date (`winget upgrade yt-dlp.yt-dlp`): the sites change often,
 and an old yt-dlp is the usual reason a link stops working.
 
+**It starts with Windows.** `helper/start-hidden.vbs` runs the helper with no window, and a copy
+of it in the Startup folder (`CountriesIRL Studio helper.vbs`) starts it at every sign-in. To stop
+that, press Win+R, type `shell:startup` and delete that file. In the Studio, click **Connect** once
+(and **Allow** when the browser asks); after that it connects by itself.
+
 The helper only answers on this computer (127.0.0.1) and only to the studio's
 own addresses. Finished files are kept for an hour in your temp folder, then
 cleared.

@@ -262,16 +262,17 @@ select {
   border-radius: 50%;
   vertical-align: 0.05em;
 }
-.helper-status__action { margin-top: 0.7rem; }
-.btn--small-dark { padding: 0.45rem 0.9rem; font-size: 0.82rem; }
-.helper-status.is-off {
-  padding: 0.85rem 1rem;
-  background: #fff7e6;
-  border: 1px solid #f2d39b;
-  border-radius: var(--radius);
-  color: var(--ink-soft);
-  line-height: 1.55;
+.helper-status.is-warn { color: var(--accent-dark); }
+.helper-status.is-warn::before {
+  content: "";
+  display: inline-block;
+  width: 0.5rem; height: 0.5rem;
+  margin-right: 0.45rem;
+  background: var(--accent);
+  border-radius: 50%;
+  vertical-align: 0.05em;
 }
+.helper-status .link { font-size: inherit; }
 
 .dl-box {
   padding: 1rem;

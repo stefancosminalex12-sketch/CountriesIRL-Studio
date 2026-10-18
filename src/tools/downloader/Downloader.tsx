@@ -263,33 +263,32 @@ export function Downloader() {
   );
 }
 
+/* One quiet line under the heading. On your PC the Studio connects by
+   itself (it remembers), and Windows starts the helper at sign-in, so you
+   only ever see "Helper connected". Anyone else sees a single line, with
+   the option to connect if they run a helper of their own. */
 function HelperStatus({ helper, onConnect }: { helper: HelperState; onConnect: () => void }) {
   if (helper === 'idle') {
     return (
-      <div className="helper-status is-off" role="status">
-        <strong>The Downloader works through a helper program on your computer.</strong> If you have it
-        running, connect to it. Your browser will ask to let this site reach apps on your device: choose Allow.
-        <div className="helper-status__action">
-          <button type="button" className="btn btn--primary btn--small-dark" onClick={onConnect}>Connect helper</button>
-        </div>
-      </div>
+      <p className="helper-status">
+        Downloads run through the CountriesIRL helper.{' '}
+        <button type="button" className="link" onClick={onConnect}>Connect</button>
+      </p>
     );
   }
-  if (helper === 'checking') return <p className="helper-status">Checking for the helper…</p>;
+  if (helper === 'checking') return <p className="helper-status">Connecting to the helper…</p>;
   if (helper === 'offline') {
     return (
-      <div className="helper-status is-off" role="status">
-        <strong>The helper isn’t running.</strong> The Downloader needs its helper program open on this PC.
-        In the studio folder, run <code>npm run helper</code> and leave that window open — this page notices on its own.
-      </div>
+      <p className="helper-status is-warn" role="status">
+        The helper isn’t running on this computer. It starts with Windows, or run <code>npm run helper</code>; this page notices on its own.
+      </p>
     );
   }
   if (!helper.ytdlp) {
     return (
-      <div className="helper-status is-off" role="status">
-        <strong>yt-dlp isn’t installed yet.</strong> The helper is running, but it needs yt-dlp to download.
-        See “Setting up the Downloader” in README.md.
-      </div>
+      <p className="helper-status is-warn" role="status">
+        The helper is running, but yt-dlp isn’t installed. See “Setting up the Downloader” in README.md.
+      </p>
     );
   }
   return (
