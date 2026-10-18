@@ -36,26 +36,29 @@ export function App() {
 
   return (
     <div className="studio">
+      {/* Built like countriesirl.com's header: the same centred column, text
+          tabs with the rust underline, then Support and a navy button back. */}
       <header className="bar">
-        <a className="bar__brand" href={`#${openTools[0].id}`}>
-          <img src="/logo.png" alt="CountriesIRL" width={30} height={30} />
-          <span className="bar__studio">Studio</span>
-        </a>
-        <nav className="tabs" aria-label="Tools">
-          {TOOLS.map((tool) => (
-            <TabLink key={tool.id} tool={tool} active={tool.id === active} />
-          ))}
-        </nav>
-        <div className="bar__end">
+        <div className="bar__inner">
+          <a className="bar__brand" href={`#${openTools[0].id}`}>
+            <img src="/logo.png" alt="CountriesIRL" width={30} height={30} />
+            <span className="bar__studio">Studio</span>
+          </a>
+          <nav className="tabs" aria-label="Tools">
+            {TOOLS.map((tool) => (
+              <TabLink key={tool.id} tool={tool} active={tool.id === active} />
+            ))}
+          </nav>
+          <a className="bar__terms" href="/terms.html">Terms</a>
           {SUPPORT_URL && (
             <a className="support-link" href={SUPPORT_URL} target="_blank" rel="noopener noreferrer">
-              <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
                 <path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.1 5.3 3 1.7-1.9 3.2-3 5.3-3 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" />
               </svg>
-              Support us
+              <span className="support-link__label">Support us</span>
             </a>
           )}
-          <a className="bar__terms" href="/terms.html">Terms</a>
+          <a className="site-link" href="https://countriesirl.com">Website</a>
         </div>
       </header>
 
@@ -75,26 +78,17 @@ export function App() {
 }
 
 function TabLink({ tool, active }: { tool: Tool; active: boolean }) {
-  const soon = tool.kind === 'soon';
-  const body = (
-    <>
-      <span className="tab__name">
-        {tool.name}
-        {soon && <span className="tab__soon">Soon</span>}
-      </span>
-      <span className="tab__blurb">{tool.blurb}</span>
-    </>
-  );
-  if (soon) {
+  if (tool.kind === 'soon') {
     return (
-      <span className="tab is-soon" aria-disabled="true" title={`${tool.name} is on its way`}>
-        {body}
+      <span className="tab is-soon" aria-disabled="true" title={`${tool.blurb}: on its way`}>
+        {tool.name}
+        <span className="tab__soon">Soon</span>
       </span>
     );
   }
   return (
-    <a className="tab" href={`#${tool.id}`} aria-current={active ? 'page' : undefined}>
-      {body}
+    <a className="tab" href={`#${tool.id}`} title={tool.blurb} aria-current={active ? 'page' : undefined}>
+      {tool.name}
     </a>
   );
 }
