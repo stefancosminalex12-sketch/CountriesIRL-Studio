@@ -74,12 +74,12 @@ code {
   flex: none;
   display: flex;
   align-items: center;
-  gap: 0.55rem;
+  gap: 0.625rem;
   margin-right: auto;
   color: var(--ink);
   text-decoration: none;
 }
-.bar__brand img { width: 30px; height: 30px; }
+.bar__brand img { width: 26px; height: 26px; }   /* the website's .brand__mark */
 .bar__studio {
   padding: 0.1rem 0.45rem;
   background: var(--ink);

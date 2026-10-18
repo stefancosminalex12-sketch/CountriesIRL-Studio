@@ -41,7 +41,7 @@ export function App() {
       <header className="bar">
         <div className="bar__inner">
           <a className="bar__brand" href={`#${openTools[0].id}`}>
-            <img src="/logo.png" alt="CountriesIRL" width={30} height={30} />
+            <img src="/logo.png" alt="CountriesIRL" width={26} height={26} />
             <span className="bar__studio">Studio</span>
           </a>
           <nav className="tabs" aria-label="Tools">
