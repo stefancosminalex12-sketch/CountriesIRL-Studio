@@ -9,11 +9,18 @@ const SCREENS: Record<string, () => ReactNode> = {
   editor: () => <Editor />
 };
 
-const openTools = TOOLS.filter((t) => t.kind !== 'soon');
+/* The tools with a screen here: not the ones on their way, nor the sites that open on their own. */
+const openTools = TOOLS.filter((t) => t.kind !== 'soon' && t.kind !== 'link');
 
 function fromHash(): string {
   const id = window.location.hash.slice(1);
   return openTools.some((t) => t.id === id) ? id : openTools[0].id;
+}
+
+/* An old link to a tool that now opens on its own (studio…/#maps) goes straight there. */
+{
+  const linked = TOOLS.find((t) => t.kind === 'link' && t.id === window.location.hash.slice(1));
+  if (linked?.url) window.location.replace(linked.url);
 }
 
 export function App() {
@@ -84,6 +91,14 @@ function TabLink({ tool, active }: { tool: Tool; active: boolean }) {
         {tool.name}
         <span className="tab__soon">Soon</span>
       </span>
+    );
+  }
+  // Opened in the whole window, without this bar: the site has its own way back to the studio.
+  if (tool.kind === 'link') {
+    return (
+      <a className="tab" href={tool.url} title={tool.blurb}>
+        {tool.name}
+      </a>
     );
   }
   return (
